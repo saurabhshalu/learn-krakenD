@@ -1,0 +1,129 @@
+{
+    "$schema": "https://www.krakend.io/schema/v2.3/krakend.json",
+    "version": 3,
+    "endpoints": [
+        {
+            "endpoint": "/items",
+            "backend": [
+                {
+                    "host": [
+                        "https://fakestoreapi.com"
+                    ],
+                    "url_pattern": "/products",
+                    "encoding": "json",
+                    "is_collection": true
+                },
+                {
+                    "host": [
+                        "https://fakestoreapi.com"
+                    ],
+                    "url_pattern": "/products/category",
+                    "encoding": "json",
+                    "is_collection": true
+                }
+            ]
+        },
+        {
+            "extra_config": {
+                "auth/validator": {
+                    "alg": "RS256",
+                    "jwk_url": "http://localhost:6009/realms/test-realm/protocol/openid-connect/certs",
+                    "disable_jwk_security": true,
+                    "operation_debug": true,
+                    "cache": true,
+                    "propagate_claims": [
+                        [
+                            "userEmail",
+                            "x-user"
+                        ],
+                        [
+                            "realm_access.roles",
+                            "x-roles"
+                        ]
+                    ]
+                }
+            },
+            "endpoint": "/httpbin",
+            "input_query_strings": [
+                "test"
+            ],
+            "input_headers": [
+                "x-user",
+                "Authorization",
+                "x-roles"
+            ],
+            "backend": [
+                {
+                    "host": [
+                        "https://httpbin.org"
+                    ],
+                    "url_pattern": "/get",
+                    "method": "GET",
+                    "encoding": "json"
+                }
+            ]
+        },
+        {
+            "extra_config": {
+                "auth/validator": {
+                    "alg": "RS256",
+                    "jwk_url": "http://localhost:6009/realms/test-realm/protocol/openid-connect/certs",
+                    "disable_jwk_security": true,
+                    "operation_debug": true,
+                    "cache": true,
+                    "propagate_claims": [
+                        [
+                            "userEmail",
+                            "x-user"
+                        ],
+                        [
+                            "realm_access.roles",
+                            "x-roles"
+                        ]
+                    ]
+                }
+            },
+            "endpoint": "/fetchCustomerDetails",
+            "method": "POST",
+            "input_headers": [
+                "x-user",
+                "Authorization",
+                "x-roles",
+                "opId",
+                "buId",
+                "lang",
+                "userId",
+                "Content-Type"
+            ],
+            "backend": [
+                {
+                    "host": [
+                        "<host_name>"
+                    ],
+                    "url_pattern": "<url_pattern>",
+                    "method": "POST",
+                    "encoding": "json",
+                    "extra_config": {
+                        "modifier/martian": {
+                            "header.Modifier": {
+                                "scope": [
+                                    "request"
+                                ],
+                                "name": "Authorization",
+                                "value": "<new_authorization_header>"
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "extra_config": {
+        "telemetry/logging": {
+            "level": "DEBUG",
+            "prefix": "[KRAKEND]",
+            "syslog": false,
+            "stdout": true
+        }
+    }
+}
