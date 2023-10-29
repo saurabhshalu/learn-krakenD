@@ -3,6 +3,19 @@
     "version": 3,
     "endpoints": [
         {
+            "endpoint": "/realms/{realmName}/protocol/openid-connect/token",
+            "method": "POST",
+            "backend": [
+                {
+                    "host": [
+                        "http://localhost:6009"
+                    ],
+                    "url_pattern": "realms/{realmName}/protocol/openid-connect/token",
+                    "method": "POST"
+                }
+            ]
+        },
+        {
             "endpoint": "/items",
             "backend": [
                 {
